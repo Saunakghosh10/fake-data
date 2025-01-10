@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { faker } from '@faker-js/faker';
+import React, { useState } from "react"
+import { faker, fakerDE, fakerFR, fakerES, fakerIT } from '@faker-js/faker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
@@ -44,81 +44,88 @@ export function DataGenerator() {
     { name: "email", type: "string", connection: "emails" },
     { name: "password", type: "string", connection: "passwords" },
   ])
-  const [generatedData, setGeneratedData] = useState<any[]>([])
+  const [generatedData, setGeneratedData] = useState<Record<string, unknown>[]>([])
   const [recordCount, setRecordCount] = useState(10)
   const [corruptData, setCorruptData] = useState(false)
   const [locale, setLocale] = useState('en')
 
-  useEffect(() => {
-    faker.locale = locale;
-  }, [locale])
+  const getFaker = () => {
+    switch (locale) {
+      case 'de': return fakerDE;
+      case 'fr': return fakerFR;
+      case 'es': return fakerES;
+      case 'it': return fakerIT;
+      default: return faker;
+    }
+  }
 
   const generateFieldValue = (connection: string) => {
+    const currentFaker = getFaker();
     switch (connection) {
       // User related
-      case "ids": return faker.number.int(10000)
-      case "names": return faker.person.fullName()
-      case "emails": return faker.internet.email()
-      case "passwords": return faker.internet.password()
-      case "phones": return faker.phone.number()
-      case "addresses": return faker.location.streetAddress()
-      
-      // Car related
-      case "vin": return faker.vehicle.vin()
-      case "manufacturer": return faker.vehicle.manufacturer()
-      case "model": return faker.vehicle.model()
-      case "type": return faker.vehicle.type()
-      case "fuel": return faker.vehicle.fuel()
-      case "color": return faker.vehicle.color()
-      
-      // Order related
-      case "orderId": return faker.string.alphanumeric(8).toUpperCase()
-      case "date": return faker.date.recent().toISOString()
-      case "status": return faker.helpers.arrayElement(['pending', 'processing', 'completed', 'cancelled'])
-      case "amount": return faker.number.float({ min: 10, max: 1000, precision: 2 })
-      case "items": return Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () => ({
-        id: faker.string.alphanumeric(5),
-        name: faker.commerce.productName(),
-        price: faker.commerce.price()
-      }))
-      
-      // Maintenance related
-      case "serviceId": return faker.string.alphanumeric(6).toUpperCase()
-      case "description": return faker.lorem.sentence()
-      case "cost": return faker.number.float({ min: 50, max: 5000, precision: 2 })
-      case "technician": return faker.person.fullName()
-      
-      // Inventory related
-      case "stockId": return faker.string.alphanumeric(7).toUpperCase()
-      case "quantity": return faker.number.int({ min: 0, max: 1000 })
-      case "location": return faker.location.city()
-      case "category": return faker.commerce.department()
-      
-      // Payment related
-      case "transactionId": return faker.string.alphanumeric(10).toUpperCase()
-      case "method": return faker.helpers.arrayElement(['credit_card', 'debit_card', 'paypal', 'cash'])
-      
-      // Vehicle related
-      case "year": return faker.date.past().getFullYear()
-      case "registration": return faker.vehicle.vrm()
-      
-      // Service related
-      case "duration": return faker.number.int({ min: 30, max: 180 })
-      case "price": return faker.commerce.price()
-      
-      // Review related
-      case "rating": return faker.number.int({ min: 1, max: 5 })
-      case "comment": return faker.lorem.paragraph()
-      case "reviewer": return faker.person.fullName()
-      
-      // Location related
-      case "city": return faker.location.city()
-      case "state": return faker.location.state()
-      case "country": return faker.location.country()
-      case "coordinates": return {
-        latitude: faker.location.latitude(),
-        longitude: faker.location.longitude()
-      }
+        case "ids": return currentFaker.number.int(10000)
+        case "names": return currentFaker.person.fullName()
+        case "emails": return currentFaker.internet.email()
+        case "passwords": return currentFaker.internet.password()
+        case "phones": return currentFaker.phone.number()
+        case "addresses": return currentFaker.location.streetAddress()
+        
+        // Car related
+        case "vin": return currentFaker.vehicle.vin()
+        case "manufacturer": return currentFaker.vehicle.manufacturer()
+        case "model": return currentFaker.vehicle.model()
+        case "type": return currentFaker.vehicle.type()
+        case "fuel": return currentFaker.vehicle.fuel()
+        case "color": return currentFaker.vehicle.color()
+        
+        // Order related
+        case "orderId": return currentFaker.string.alphanumeric(8).toUpperCase()
+        case "date": return currentFaker.date.recent().toISOString()
+        case "status": return currentFaker.helpers.arrayElement(['pending', 'processing', 'completed', 'cancelled'])
+        case "amount": return currentFaker.number.float({ min: 10, max: 1000, fractionDigits: 2 })
+        case "items": return Array.from({ length: currentFaker.number.int({ min: 1, max: 5 }) }, () => ({
+          id: currentFaker.string.alphanumeric(5),
+          name: currentFaker.commerce.productName(),
+          price: currentFaker.commerce.price()
+        }))
+        
+        // Maintenance related
+        case "serviceId": return currentFaker.string.alphanumeric(6).toUpperCase()
+        case "description": return currentFaker.lorem.sentence()
+        case "cost": return currentFaker.number.float({ min: 50, max: 5000, fractionDigits: 2 })
+        case "technician": return currentFaker.person.fullName()
+        
+        // Inventory related
+        case "stockId": return currentFaker.string.alphanumeric(7).toUpperCase()
+        case "quantity": return currentFaker.number.int({ min: 0, max: 1000 })
+        case "location": return currentFaker.location.city()
+        case "category": return currentFaker.commerce.department()
+        
+        // Payment related
+        case "transactionId": return currentFaker.string.alphanumeric(10).toUpperCase()
+        case "method": return currentFaker.helpers.arrayElement(['credit_card', 'debit_card', 'paypal', 'cash'])
+        
+        // Vehicle related
+        case "year": return currentFaker.date.past().getFullYear()
+        case "registration": return currentFaker.vehicle.vrm()
+        
+        // Service related
+        case "duration": return currentFaker.number.int({ min: 30, max: 180 })
+        case "price": return currentFaker.commerce.price()
+        
+        // Review related
+        case "rating": return currentFaker.number.int({ min: 1, max: 5 })
+        case "comment": return currentFaker.lorem.paragraph()
+        case "reviewer": return currentFaker.person.fullName()
+        
+        // Location related
+        case "city": return currentFaker.location.city()
+        case "state": return currentFaker.location.state()
+        case "country": return currentFaker.location.country()
+        case "coordinates": return {
+        latitude: currentFaker.location.latitude(),
+        longitude: currentFaker.location.longitude()
+        }
       
       default: return "N/A"
     }
@@ -126,7 +133,7 @@ export function DataGenerator() {
 
   const generateData = () => {
     const data = Array.from({ length: recordCount }, () => {
-      const item: Record<string, any> = {}
+      const item: Record<string, unknown> = {}
       fields.forEach((field) => {
         if (corruptData && Math.random() < 0.1) {
           // 10% chance to corrupt data
@@ -205,11 +212,6 @@ export function DataGenerator() {
     setFields(templateFields)
   }
 
-  const handleSaveTemplate = (template: { name: string, fields: Field[] }) => {
-    // Here you would typically save the template to some form of storage
-    console.log('Saving template:', template)
-  }
-
   const columns = React.useMemo(() => 
     fields.map(field => ({
       accessorKey: field.name,
@@ -220,7 +222,7 @@ export function DataGenerator() {
   return (
     <div className="grid gap-6">
       <div className="grid md:grid-cols-2 gap-6">
-        <TemplatesSelector onTemplateSelect={handleTemplateSelect} onSaveTemplate={handleSaveTemplate} />
+        <TemplatesSelector onTemplateSelect={handleTemplateSelect} />
         <Card>
           <CardHeader>
             <CardTitle>Customize Fields</CardTitle>
@@ -375,4 +377,3 @@ export function DataGenerator() {
     </div>
   )
 }
-

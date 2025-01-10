@@ -5,10 +5,9 @@ export function Hero() {
         Get your fake data in seconds.
       </h1>
       <p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto px-4">
-        Whether you're a developer, tester, or designer, FakeData makes it easy to generate realistic, 
+        Whether you&apos;re a developer, tester, or designer, FakeData makes it easy to generate realistic, 
         customizable fake data for your applications, websites, and simulations.
       </p>
     </div>
   )
 }
-

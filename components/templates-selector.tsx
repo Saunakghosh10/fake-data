@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -11,19 +10,24 @@ import {
 } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Save, FolderOpen } from 'lucide-react'
-import { Input } from "@/components/ui/input"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-const predefinedTemplates = {
+interface Field {
+  name: string;
+  type: string;
+  connection: string;
+}
+
+interface Template {
+  name: string;
+  fields: Field[];
+}
+
+interface Templates {
+  [key: string]: Template;
+}
+
+const predefinedTemplates: Templates = {
   "user-management": {
     name: "User Management System",
     fields: [
@@ -91,20 +95,10 @@ const predefinedTemplates = {
 }
 
 interface TemplatesSelectorProps {
-  onTemplateSelect: (fields: any[]) => void;
-  onSaveTemplate: (template: any) => void;
+  onTemplateSelect: (fields: Field[]) => void;
 }
 
-export function TemplatesSelector({ onTemplateSelect, onSaveTemplate }: TemplatesSelectorProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [newTemplateName, setNewTemplateName] = useState('')
-
-  const handleSaveTemplate = () => {
-    onSaveTemplate({ name: newTemplateName, fields: [] }) 
-    setIsDialogOpen(false)
-    setNewTemplateName('')
-  }
-
+export function TemplatesSelector({ onTemplateSelect }: TemplatesSelectorProps) {
   return (
     <Card>
       <CardHeader>
@@ -164,4 +158,3 @@ export function TemplatesSelector({ onTemplateSelect, onSaveTemplate }: Template
     </Card>
   )
 }
-
